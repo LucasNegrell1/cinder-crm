@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { Plus } from "lucide-react"; // Um ícone para o botão
+import { ModalNovaOportunidade } from "@/components/ModalNovaOportunidade";
 
 type Stage = { id: string; name: string; list_order: number; };
 type Opportunity = { id: string; title: string; value: number; stage_id: string; contacts: { name: string } | null; };
@@ -12,6 +13,8 @@ type Opportunity = { id: string; title: string; value: number; stage_id: string;
 export default function Home() {
   const queryClient = useQueryClient();
   const [isMounted, setIsMounted] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 0);
@@ -75,7 +78,9 @@ export default function Home() {
           <h1 className="text-3xl font-bold text-slate-800">Pipeline de Vendas</h1>
           <p className="text-slate-500 mt-1">Acompanhe suas negociações imobiliárias em andamento.</p>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 shadow-sm transition">
+        <button 
+        onClick={() => setIsModalOpen(true)}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 shadow-sm transition">
           <Plus size={20} />
           Nova Oportunidade
         </button>
@@ -140,6 +145,10 @@ export default function Home() {
           </div>
         </DragDropContext>
       )}
+      <ModalNovaOportunidade 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)}
+          />
     </div>
   );
 }
