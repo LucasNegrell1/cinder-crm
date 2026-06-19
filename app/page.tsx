@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { Plus } from "lucide-react"; // Um ícone para o botão
 import { ModalNovaOportunidade } from "@/components/ModalNovaOportunidade";
+import { ModalDetalhes } from "@/components/ModalDetalhes";
 
 type Stage = { id: string; name: string; list_order: number; };
 type Opportunity = { id: string; title: string; value: number; stage_id: string; contacts: { name: string } | null; };
@@ -15,6 +16,8 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsMounted(true), 0);
@@ -127,7 +130,8 @@ export default function Home() {
                         {cardsThisStage.map((opp, index) => (
                           <Draggable key={opp.id} draggableId={opp.id} index={index}>
                             {(provided, snapshot) => (
-                              <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className={`bg-white p-4 rounded-lg shadow-sm border ${snapshot.isDragging ? 'border-blue-500 shadow-xl rotate-2' : 'border-slate-200'} cursor-grab active:cursor-grabbing transition-all`}>
+                              <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} onClick={() => setSelectedOpportunity(opp)}
+                              className={`bg-white p-4 rounded-lg shadow-sm border ${snapshot.isDragging ? 'border-blue-500 shadow-xl rotate-2' : 'border-slate-200'} cursor-grab active:cursor-grabbing transition-all`}>
                                   <h3 className="font-bold text-slate-800">{opp.title}</h3>
                                   <p className="text-sm text-slate-500 mt-1 flex items-center gap-2">👤 {opp.contacts?.name || 'Sem cliente'}</p>
                                   <div className="mt-3 text-sm font-bold text-emerald-600 bg-emerald-50 w-fit px-2 py-1 rounded">{formatCurrency(opp.value)}</div>
@@ -149,6 +153,10 @@ export default function Home() {
           isOpen={isModalOpen} 
           onClose={() => setIsModalOpen(false)}
           />
+          <ModalDetalhes 
+        opportunity={selectedOpportunity} 
+        onClose={() => setSelectedOpportunity(null)} 
+      />
     </div>
   );
 }
