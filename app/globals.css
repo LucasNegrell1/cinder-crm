@@ -1,1 +1,11 @@
 @import "tailwindcss";
+@source "../components";
+
+body { 
+  background-color: #090C15; 
+  color: #F8FAFC;
+}
+.bg-dots-pattern {
+  background-image: radial-gradient(#1E2538 1px, transparent 1px);
+  background-size: 24px 24px; /* Distância entre os pontos */
+}
